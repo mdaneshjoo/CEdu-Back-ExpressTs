@@ -17,7 +17,7 @@ class Passport {
         };
        passport.use(new JwtStrategy(opts, function (jwt_payload, done) {
             User.findByPk(jwt_payload.id).then(user => {
-                if (user) return done(null, user)
+                if (user) return done(null, user.display())
                 return done(eMessages.notAuthorized, false)
             }).catch(e => {
                 return done(eMessages.notAuthorized, false)

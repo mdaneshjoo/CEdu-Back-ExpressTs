@@ -2,6 +2,7 @@ import {CreateOptions, DataTypes, InstanceUpdateOptions, Op} from 'sequelize'
 import BaseModel from './base.model';
 import {HookReturn} from "sequelize/types/lib/hooks";
 import {Hash} from "../libs/hash";
+import PersonalInfo from "./personal-info.model";
 
 
 export default class User extends BaseModel {
@@ -55,12 +56,19 @@ export default class User extends BaseModel {
             }
         });
     }
+
     id = this.get('id')
     static findByUsername(userName: string,): Promise<any> {
         return User.findOne({
             where: {
                 userName
             },
+            include:[
+                {
+                    model:PersonalInfo,
+                    as:'info'
+                }
+            ]
         })
     }
 
@@ -82,5 +90,15 @@ export default class User extends BaseModel {
         return user
     }
 
+
+    static associate(models){
+        this.hasOne(models.PersonalInfo,{
+            as:'info',
+            foreignKey:{
+                allowNull:false,
+                name:'userId'
+            }
+        })
+    }
 
 }

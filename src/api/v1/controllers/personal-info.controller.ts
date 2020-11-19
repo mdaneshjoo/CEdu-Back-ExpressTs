@@ -1,16 +1,11 @@
 import {Request, Response, Router} from 'express'
 import IController from '../../../interfaces/controller.interface'
-import User from "../../../models/user.model";
-import {sendError, success} from "../../../utils/helpers/response";
-import ServerError from "../../../errors/serverError";
-import {IAuthBody} from "../../../interfaces/authBody.interface";
-import authBody from "../../../middlewares/authBody.middleware";
-import eMessages from "../../../utils/statics/eMessages";
-import JWT from "../../../libs/JWT";
+import PersonalInfo from "../../../models/personal-info.model";
+
 /**
- * @classdesc for login and signup
+ * @classdesc this class used for control user personal info
  * */
-export default class test implements IController {
+export default class PersonalInfoController implements IController {
     router = Router()
 
     constructor() {
@@ -18,13 +13,13 @@ export default class test implements IController {
     }
 
     init(): void {
-        this.router.post('/test', this.test)
+        this.router.post('/info', this.save)
     }
 
     /**
-     * @api {post} /auth/login Request For Login
-     * @apiName Login
-     * @apiGroup AuthMiddleware
+     * @api {post} /user/info Request for saving user info
+     * @apiName save Personal info
+     * @apiGroup user info
      *
      * @apiParam {String} userName Required
      * @apiParam {String} password Required
@@ -45,8 +40,12 @@ export default class test implements IController {
      *                          token : <bearer-token>
      *                      }
      */
-    private test(req: Request, res: Response) {
-        res.send('ok')
+    private save({body,user}: Request, res: Response) {
+
+        PersonalInfo.create({
+            userId:user['id'],
+            ...body
+        })
 
     }
 

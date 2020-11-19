@@ -19,6 +19,8 @@ const requiredEnv = (name) => {
 
 const config = {
     env: process.env.NODE_ENV || 'development',
+    port: process.env.PORT || 10000,
+    host: process.env.HOST || '0.0.0.0',
     secret: requiredEnv('SECRET'),
     JWTexp: process.env.JWT_EXP || '1week',
     dbconfig: {
@@ -35,8 +37,13 @@ const config = {
         },
         sync: {force: false} // force true  drop table and make it again
     },
-    port: process.env.PORT || 10000,
-    host: process.env.HOST || '0.0.0.0'
+    aws: {
+        publishS3: process.env.PUBLISH_S3 || false,
+        config: {
+            accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+            secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+        }
+    }
 }
 
 

@@ -1,15 +1,14 @@
-import Auth from './controllers/auth.controller'
+import AuthController from './controllers/auth.controller'
 import InitialRoute from './initial.route'
 import authBody from "../../middlewares/authBody.middleware";
-import test from "./controllers/test.controller";
 import passport from "../../libs/passport";
+import PersonalInfoController from "./controllers/personal-info.controller";
 
 
 const router = new InitialRoute({
     route: [
-        {path: '/auth', controller: new Auth(), middleware: [authBody]},
-        {path: '/user', controller: new test(), middleware: [passport.token]},
-
+        {path: '/auth', controller: new AuthController(), middleware: [authBody]},
+        {path: '/user', controller: new PersonalInfoController(), middleware: [passport.token]},
     ]
 }).router
 

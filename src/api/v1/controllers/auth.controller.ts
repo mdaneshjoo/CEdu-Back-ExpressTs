@@ -9,7 +9,7 @@ import JWT from "../../../libs/JWT";
 /**
  * @classdesc for login and signup
  * */
-export default class Auth implements IController {
+export default class AuthController implements IController {
     router = Router()
 
     constructor() {
@@ -49,7 +49,7 @@ export default class Auth implements IController {
         User.findByUsername(body.userName)
             .then(user => {
                 if (!user) throw new ServerError(eMessages.notFound)
-                return Auth.makeResponse(user)
+                return AuthController.makeResponse(user)
             })
             .then(success(res))
             .catch(sendError(res))
@@ -85,7 +85,7 @@ export default class Auth implements IController {
             .then(([user, created]) => {
                 if (!created) throw new ServerError(eMessages.userExist)
                 if (user) {
-                    return Auth.makeResponse(user)
+                    return AuthController.makeResponse(user)
                 }
             })
             .then(success(res))
@@ -94,14 +94,20 @@ export default class Auth implements IController {
 
     }
 
+    //TODO make controller for update user
+    //TODO make controller with socket for validate user exist when typing
+
+
     /**
      * make response object with koken and user detail exept password
      * @param {User} user - user instance
+     * @param {any} meta - add extra field
      * @return object - returns object two property user and token
      * */
-    private static makeResponse(user: User): object {
+    private static makeResponse(user: User,meta=null): object {
         return {
             user: user.display(),
+            meta,
             token: JWT.getToken(<number>user.id)
         }
     }
