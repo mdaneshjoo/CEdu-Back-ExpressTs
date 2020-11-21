@@ -1,19 +1,24 @@
 import {Request, Response, Router} from 'express'
 import IController from '../../../interfaces/controller.interface'
 import PersonalInfo from "../../../models/personal-info.model";
+import Multer from "../../../libs/Multer";
+import personalInfoBody from "../../../middlewares/personal-info/saveValidator.middleware";
+import {uploadAvatar} from "../../../middlewares/upload/upload.middleware";
+import picMimeTypes from '../../../utils/mimeTypes/onlyImages'
+
 
 /**
  * @classdesc this class used for control user personal info
  * */
 export default class PersonalInfoController implements IController {
     router = Router()
-
+    // private multer=new Multer()
     constructor() {
         this.init()
     }
 
     init(): void {
-        this.router.post('/info', this.save)
+        this.router.post('/info', uploadAvatar,personalInfoBody, this.save)
     }
 
     /**
@@ -40,10 +45,12 @@ export default class PersonalInfoController implements IController {
      *                          token : <bearer-token>
      *                      }
      */
-    private save({body,user}: Request, res: Response) {
-
+    private save(req:Request, res: Response) {
+        const {body, user, file}= req
+        // file.
         PersonalInfo.create({
-            userId:user['id'],
+            userId: user['id'],
+            // avatar,
             ...body
         })
 

@@ -1,6 +1,6 @@
 import AuthController from './controllers/auth.controller'
 import InitialRoute from './initial.route'
-import authBody from "../../middlewares/authBody.middleware";
+import authBody from "../../middlewares/auth/authBody.middleware";
 import passport from "../../libs/passport";
 import PersonalInfoController from "./controllers/personal-info.controller";
 

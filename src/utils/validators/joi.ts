@@ -4,14 +4,18 @@ import ServerError from "../../errors/serverError";
 
 export default class JoiValidator {
     Joi = Joi
-    private schema
+    private schema= new Schemas()
 
     constructor() {
-        this.schema = new Schemas()
     }
 
     public authValidate(body: object) {
         const {value, error} = Joi.object(this.schema.authSchema).validate(body)
+        if (error) throw new ServerError(error)
+        return value
+    }
+    public personalInfoValidator(body:object){
+        const {value,error}=Joi.object(this.schema.personalInfoSchema).validate(body)
         if (error) throw new ServerError(error)
         return value
     }

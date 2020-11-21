@@ -22,20 +22,21 @@ const config = {
     port: process.env.PORT || 10000,
     host: process.env.HOST || '0.0.0.0',
     secret: requiredEnv('SECRET'),
-    JWTexp: process.env.JWT_EXP || '1week',
+    JWTexp: process.env.JWT_EXP || '4week',
     dbconfig: {
         database: requiredEnv('DB_NAME'),
         username: requiredEnv("DB_USERNAME"),
         password: requiredEnv('DB_PASSWORD'),
         host: requiredEnv('DB_HOST'),
         driver: dbDriver,
-        meta: {
-            logging: false,
-            timestamp: true,
-            paranoid: true
-
-        },
-        sync: {force: false} // force true  drop table and make it again
+        options:{
+            meta: {
+                logging: false,
+                timestamp: true,
+                paranoid: true
+            },
+            sync: {force: false} // force true  drop table and make it again
+        }
     },
     aws: {
         publishS3: process.env.PUBLISH_S3 || false,
@@ -43,7 +44,15 @@ const config = {
             accessKeyId: process.env.AWS_ACCESS_KEY_ID,
             secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
         }
+    },
+    uploadServer:{
+        publishToUploadServer: process.env.PUBLISH_US || false,
+    },
+    uploadHere:{
+        publishHere: process.env.PUBLISH_Here || false,
+        rootDist:process.env.UPLOAD_DIST || 'uploads'
     }
+
 }
 
 

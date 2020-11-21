@@ -1,6 +1,6 @@
 import * as Joi from 'joi'
 
-export default class Schemas{
+export default class Schemas {
     private _authSchema = {
         userName: Joi.string()
             .alphanum()
@@ -26,4 +26,18 @@ export default class Schemas{
     set authSchema(schema: any) {
         this._authSchema = schema
     }
+
+
+    private _personalInfoSchema = {
+        name: Joi.string(),
+        lastName: Joi.string(),
+    }
+
+    get personalInfoSchema() {
+        return this._personalInfoSchema
+    }
+    set personalInfoSchema(schema: any) {
+        this._personalInfoSchema = schema
+    }
+
 }

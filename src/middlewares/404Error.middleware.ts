@@ -2,6 +2,7 @@ import ServerError from "../errors/serverError"
 import {Request, Response} from 'express'
 import config from "../config";
 import eMessages from "../utils/statics/eMessages";
+import multer = require("multer");
 
 export const notFoundPage = (req: Request, res: Response, next) => {
     next(new ServerError(eMessages.routeNotFound))

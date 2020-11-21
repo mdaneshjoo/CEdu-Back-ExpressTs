@@ -1,4 +1,5 @@
 {
+    "files": ["custom.d.ts"],
     "compilerOptions": {
         "sourceMap": true,
         "target": "es6",

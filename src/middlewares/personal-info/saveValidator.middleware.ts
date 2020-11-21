@@ -1,6 +1,6 @@
 import {Response, Request} from 'express'
-import {IAuthBody} from "../interfaces/authBody.interface";
-import JoiValidator from "../utils/validators/joi";
+import {IAuthBody} from "../../interfaces/authBody.interface";
+import JoiValidator from "../../utils/validators/joi";
 
 /**
  * validate api for body request
@@ -10,10 +10,13 @@ import JoiValidator from "../utils/validators/joi";
  * @param {string} req.body.phoneNumber - not Required but validate
  * @throws {ServerError} userName is required Or email is not valid
  * */
-const authBody = (req: Request, res: Response, next): void => {
+const personalInfoBody = (req: Request, res: Response, next): void => {
     const joi = new JoiValidator()
-    req.body =joi.authValidate(req.body)
-    next()
+    req.body = joi.personalInfoValidator(req.body)
+    console.log(req.file)
+    const url=''
+    req['avatar'] = {url}
+    // next()
 }
 
-export default authBody
+export default personalInfoBody
