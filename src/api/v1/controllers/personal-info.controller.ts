@@ -1,24 +1,25 @@
 import {Request, Response, Router} from 'express'
 import IController from '../../../interfaces/controller.interface'
 import PersonalInfo from "../../../models/personal-info.model";
-import Multer from "../../../libs/Multer";
 import personalInfoBody from "../../../middlewares/personal-info/saveValidator.middleware";
 import {uploadAvatar} from "../../../middlewares/upload/upload.middleware";
-import picMimeTypes from '../../../utils/mimeTypes/onlyImages'
-
+import {sendError, success} from "../../../utils/helpers/response";
+import * as fs from 'fs'
+import ServerError from "../../../errors/serverError";
 
 /**
  * @classdesc this class used for control user personal info
  * */
 export default class PersonalInfoController implements IController {
     router = Router()
-    // private multer=new Multer()
+
     constructor() {
         this.init()
     }
 
     init(): void {
-        this.router.post('/info', uploadAvatar,personalInfoBody, this.save)
+        this.router.post('/info', uploadAvatar, personalInfoBody, this.save)
+        this.router.get('/info', this.getDetail)
     }
 
     /**
@@ -45,15 +46,32 @@ export default class PersonalInfoController implements IController {
      *                          token : <bearer-token>
      *                      }
      */
-    private save(req:Request, res: Response) {
-        const {body, user, file}= req
-        // file.
-        PersonalInfo.create({
-            userId: user['id'],
-            // avatar,
-            ...body
-        })
+    private save(req: Request, res: Response) {
+        const {body, user, file} = req
+        PersonalInfo._CreateOrUpdate(user['id'], {avatar: file.path, ...body}, true)
+            .then((personalInfo) => {
+                if (Array.isArray(personalInfo)) {
+                    const [oldData, updatedDate] = personalInfo
+                    try {
+                        fs.existsSync(oldData['avatar']) ? fs.unlinkSync(oldData['avatar']) : null
+                    } catch (e) {
+                        throw new ServerError(e)
+                    }
+                    return updatedDate
+                }
+                return personalInfo
+            })
+            .then(success(res))
+            .catch(sendError(res))
+    }
 
+    private getDetail(req: Request, res: Response) {
+        PersonalInfo.findOne({
+            where: {
+                userId: req.user['id']
+            },
+            raw: true
+        }).then(success(res))
     }
 
 

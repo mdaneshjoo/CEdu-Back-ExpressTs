@@ -7,9 +7,9 @@ import InitModels from './models/init.model'
 
 export default class App {
     private app: Application;
-    private port: number;
-    private host :string;
-    private Env:string;
+    private readonly port: number;
+    private readonly host :string;
+    private readonly Env:string;
     constructor(private appConfig: { port:number; host:string;envType:string;},
                 private _app:{middlewares: any[];router: Router[];thirdParty: any[]},
                 private dbconfig: { database: string; username: string; password: string; host: string, driver: Dialect,options?:any },

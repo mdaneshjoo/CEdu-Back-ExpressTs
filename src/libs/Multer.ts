@@ -1,5 +1,5 @@
 import * as _multer from 'multer'
-import {Response} from 'express'
+import {NextFunction, Response} from 'express'
 import * as multerS3 from 'multer-s3'
 import * as aws from 'aws-sdk'
 import config from "../config";
@@ -101,6 +101,8 @@ export default class Multer {
      * @param {string} user - user id for sub folder every data of user go to this folder
      * @param fileMimetype
      * @param mimetypes
+     * @param host
+     * @param port
      * @example  uploads/1012/avatar/
      * @return {string} return directory name
      * */
@@ -121,12 +123,29 @@ export default class Multer {
      * @param {string} filedName - the filedName in req.file
      * @param {Object} mimetype - mimetype fo validate file types
      * */
-    public uploadSingle = (fileName, filedName, mimetype) => (req, res) => {
-        if (config.aws.publishS3) this.uploadS3(fileName, mimetype).single(filedName)(req, res, (err) => this.handelError(res, err))
+    public uploadSingle = (fileName, filedName, mimetype) => (req, res, next) => {
+        if (config.aws.publishS3) return this.uploadS3(fileName, mimetype).single(filedName)(req, res, (err) => {
+            if (err)
+                return this.handelError(res, err)
+            req.file.url = config.aws.url + req.file.path
+            next()
+        })
 
-        if (config.uploadServer.publishToUploadServer) this.uploadServer().single(filedName)(req, res, (err) => this.handelError(res, err))
+        if (config.uploadServer.publishToUploadServer) return this.uploadServer().single(filedName)(req, res, (err) => {
+            if (err)
+                return this.handelError(res, err)
+            req.file.url = config.uploadServer.url + req.file.path
+            next()
+        })
 
-        if (config.uploadHere.publishHere) this.uploadHere(fileName, mimetype).single(filedName)(req, res, (err) => this.handelError(res, err))
+        if (config.uploadHere.publishHere) return this.uploadHere(fileName, mimetype).single(filedName)(req, res, (err) => {
+            if (err)
+                return this.handelError(res, err)
+            req.file.url = config.uploadHere.url + req.file.path
+            next()
+        })
+
+
     }
 
 

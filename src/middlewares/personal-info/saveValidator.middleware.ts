@@ -13,10 +13,7 @@ import JoiValidator from "../../utils/validators/joi";
 const personalInfoBody = (req: Request, res: Response, next): void => {
     const joi = new JoiValidator()
     req.body = joi.personalInfoValidator(req.body)
-    console.log(req.file)
-    const url=''
-    req['avatar'] = {url}
-    // next()
+    next()
 }
 
 export default personalInfoBody

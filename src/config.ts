@@ -16,7 +16,6 @@ const requiredEnv = (name) => {
     return process.env[name]
 }
 
-
 const config = {
     env: process.env.NODE_ENV || 'development',
     port: process.env.PORT || 10000,
@@ -29,10 +28,10 @@ const config = {
         password: requiredEnv('DB_PASSWORD'),
         host: requiredEnv('DB_HOST'),
         driver: dbDriver,
-        options:{
+        options: {
             meta: {
                 logging: false,
-                timestamp: true,
+                timestamp: false,
                 paranoid: true
             },
             sync: {force: false} // force true  drop table and make it again
@@ -40,20 +39,23 @@ const config = {
     },
     aws: {
         publishS3: process.env.PUBLISH_S3 || false,
+        url: process.env.PUBLISH_S3 || '',
         config: {
             accessKeyId: process.env.AWS_ACCESS_KEY_ID,
             secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
         }
     },
-    uploadServer:{
+    uploadServer: {
         publishToUploadServer: process.env.PUBLISH_US || false,
+        url: process.env.PUBLISH_US || ''
     },
-    uploadHere:{
+    uploadHere: {
+        url: '',
         publishHere: process.env.PUBLISH_Here || false,
-        rootDist:process.env.UPLOAD_DIST || 'uploads'
+        rootDist: process.env.UPLOAD_DIST || 'uploads'
     }
 
 }
-
+config.uploadHere.url = config.host +':'+ config.port + '/'
 
 export default {...config}
