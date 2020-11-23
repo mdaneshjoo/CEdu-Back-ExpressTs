@@ -1,6 +1,6 @@
 import {Response} from 'express'
 import eMessages from "../statics/eMessages";
-import config from "../../config";
+import config from "../../configs/config";
 
 export const sendError = (res: Response) => (e?) => {
     if (config.env === 'development') console.log(e || eMessages.notFound)

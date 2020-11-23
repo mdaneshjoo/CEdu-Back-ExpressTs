@@ -2,7 +2,7 @@ import * as _multer from 'multer'
 import {NextFunction, Response} from 'express'
 import * as multerS3 from 'multer-s3'
 import * as aws from 'aws-sdk'
-import config from "../config";
+import config from "../configs/config";
 import ServerError from "../errors/serverError";
 import eMessages from "../utils/statics/eMessages";
 import {IMulterStorage} from "../interfaces/multer.interface";
@@ -40,7 +40,7 @@ export default class Multer {
     }
 
     private uploadS3(fileName: string, mimetype) {
-        //TODO : upload to s3. config not completed yet
+        //TODO : upload to s3. configs not completed yet
         return this.multer(mimetype, {
             storage: multerS3({
                 s3: new aws.S3(config.aws.config),
@@ -97,7 +97,7 @@ export default class Multer {
 
     /**
      * create string for file name
-     * @param {string} rootFolder - root folders come from config like uploads
+     * @param {string} rootFolder - root folders come from configs like uploads
      * @param {string} user - user id for sub folder every data of user go to this folder
      * @param fileMimetype
      * @param mimetypes

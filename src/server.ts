@@ -1,8 +1,8 @@
 import App from './app'
 import * as bodyParser from 'body-parser'
-import config from './config'
+import config from './configs/config'
 import apiRoutes from './api/routes'
-import { notFoundPage, errorHandler } from './middlewares/404Error.middleware'
+import {notFoundPage, errorHandler} from './middlewares/404Error.middleware'
 import * as morgan from 'morgan'
 import * as cors from 'cors';
 
@@ -16,21 +16,23 @@ const app = new App(
         middlewares: [
             cors(),
             bodyParser.json(),
-            bodyParser.urlencoded({ extended: true }),
+            bodyParser.urlencoded({extended: true}),
             morgan('dev'),
 
 
         ],
         router: [
-            { path: '/api', router: apiRoutes }
+            {path: '/api', router: apiRoutes}
         ],
         thirdParty: [
             notFoundPage,
             errorHandler
 
         ]
-    }
-    , config.dbconfig)
+    },
+    config.dbconfig,
+    config.neo4j)
+
 
 
 app.listen()

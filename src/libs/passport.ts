@@ -1,6 +1,6 @@
 import * as passport from "passport";
 import {ExtractJwt, Strategy as JwtStrategy} from "passport-jwt";
-import config from "../config";
+import config from "../configs/config";
 import eMessages from "../utils/statics/eMessages";
 import User from "../models/user.model";
 import {sendError} from "../utils/helpers/response";

@@ -1,5 +1,5 @@
 import * as jwt from "jsonwebtoken";
-import config from "../config";
+import config from "../configs/config";
 
 export default class JWT {
     public static getToken(id: number, args?: object) {

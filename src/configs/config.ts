@@ -1,7 +1,7 @@
 import {Dialect} from 'sequelize'
 import * as dotenv from 'dotenv';
 import * as path from 'path'
-import ENVerror from './errors/envError'
+import ENVerror from '../errors/envError'
 
 dotenv.config({
     path: path.join(process.cwd(), '.env'),
@@ -37,6 +37,11 @@ const config = {
             sync: {force: false} // force true  drop table and make it again
         }
     },
+    neo4j: {
+        url: requiredEnv('NEO4J_URL'),
+        userName: requiredEnv('NEO4J_USERNAME'),
+        password: requiredEnv('NEO4J_PASSWORD')
+    },
     aws: {
         publishS3: process.env.PUBLISH_S3 || false,
         url: process.env.PUBLISH_S3 || '',
@@ -56,6 +61,6 @@ const config = {
     }
 
 }
-config.uploadHere.url = config.host +':'+ config.port + '/'
+config.uploadHere.url = config.host + ':' + config.port + '/'
 
 export default {...config}

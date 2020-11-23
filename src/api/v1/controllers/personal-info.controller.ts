@@ -6,13 +6,13 @@ import {uploadAvatar} from "../../../middlewares/upload/upload.middleware";
 import {sendError, success} from "../../../utils/helpers/response";
 import * as fs from 'fs'
 import ServerError from "../../../errors/serverError";
+import {cypher} from "../../../libs/Neo4j";
 
 /**
  * @classdesc this class used for control user personal info
  * */
 export default class PersonalInfoController implements IController {
     router = Router()
-
     constructor() {
         this.init()
     }
@@ -46,7 +46,7 @@ export default class PersonalInfoController implements IController {
      *                          token : <bearer-token>
      *                      }
      */
-    private save(req: Request, res: Response) {
+    private async save(req: Request, res: Response) {
         const {body, user, file} = req
         PersonalInfo._CreateOrUpdate(user['id'], {avatar: file.path, ...body}, true)
             .then((personalInfo) => {

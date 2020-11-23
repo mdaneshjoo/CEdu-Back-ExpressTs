@@ -1,6 +1,6 @@
 import ServerError from "../errors/serverError"
 import {Request, Response} from 'express'
-import config from "../config";
+import config from "../configs/config";
 import eMessages from "../utils/statics/eMessages";
 import multer = require("multer");
 
