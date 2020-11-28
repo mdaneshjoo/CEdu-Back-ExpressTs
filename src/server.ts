@@ -5,6 +5,8 @@ import apiRoutes from './api/routes'
 import {notFoundPage, errorHandler} from './middlewares/404Error.middleware'
 import * as morgan from 'morgan'
 import * as cors from 'cors';
+import {SocketIo} from "./libs/SocektIo";
+import {ExportApp} from "./libs/App";
 
 const app = new App(
     {
@@ -33,7 +35,8 @@ const app = new App(
     config.dbconfig,
     config.neo4j)
 
-
+new ExportApp(app)
+new SocketIo(app)
 
 app.listen()
 

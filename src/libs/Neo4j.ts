@@ -1,8 +1,5 @@
-import * as neo4j from 'neo4j-driver'
-import {Driver} from 'neo4j-driver'
 import * as _cypher from 'cypher-query-builder'
 import {Connection} from 'cypher-query-builder'
-import ServerError from "../errors/serverError";
 
 let cypher: Connection
 
@@ -24,7 +21,7 @@ export class Neo4jInitial {
 
 export {cypher}
 
-export class Cy {
+export class Neo4j {
 
     updateVar(name: string, label: string, where: {}, setVar: {}) {
         return cypher

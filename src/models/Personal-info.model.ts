@@ -1,20 +1,30 @@
 import {CreateOptions, DataTypes} from 'sequelize'
-import BaseModel from './base.model';
+import BaseModel from './Base.model';
 import {HookReturn} from "sequelize/types/lib/hooks";
-import {cypher, Cy} from "../libs/Neo4j";
+import {cypher, Neo4j} from "../libs/Neo4j";
 import {node} from "cypher-query-builder";
 import {assert} from "joi";
+import ServerError from "../errors/serverError";
 
 
 export default class PersonalInfo extends BaseModel {
     static init(sequelize) {
         return super.init({
             userId: {
-                type: DataTypes.INTEGER
+                type: DataTypes.BIGINT
             },
-            name: DataTypes.STRING,
-            lastName: DataTypes.STRING,
-            avatar: DataTypes.STRING,
+            name: {
+                type:DataTypes.STRING,
+                allowNull:false
+            },
+            lastName: {
+                type:DataTypes.STRING,
+                allowNull:false
+            },
+            avatar: {
+                type:DataTypes.STRING,
+                defaultValue:'/constants/images/default-avatar.png'
+            },
             ...super.baseFields,
 
         }, {
@@ -22,32 +32,31 @@ export default class PersonalInfo extends BaseModel {
             hooks: {
                 afterCreate(info: PersonalInfo, options: CreateOptions): HookReturn {
                     // TODO make here clean and test
-                    return cypher.matchNode('user', 'User')
-                        .where({user: {id: info.get('userId')}})
-                        .return('user')
-                        .run()
-                        .then(res => {
-                            if (res.length)
-                                cypher
-                                    .matchNode('info', 'User')
-                                    .where({info: {id: info.get('userId')}})
-                                    .setValues({info: {...Object.assign({}, info.graphAttr(), res[0]['user'].properties)}})
-                                    .run()
-                        })
-                        .catch(e => {
-                            console.log(e)
-                        })
+                    const neo4j = new Neo4j()
+                    return neo4j.findAllNode('user', 'User',
+                        {user: {id: info.get('userId')}},
+                        'user'
+                    ).then(res => {
+                        return neo4j.updateValue('info', 'User',
+                            {info: {id: info.get('userId')}},
+                            {info: {...Object.assign({}, info.graphAttr(), res[0]['user'].properties)}}
+                        )
+                    }).then(res => {
+                    }).catch(e => {
+                        new ServerError(e)
+                    })
                 },
                 afterUpdate(info: PersonalInfo, options: CreateOptions): HookReturn {
-                    return new Cy().updateVar('info', 'User',
+                    return new Neo4j().updateVar('info', 'User',
                         {
                             id: info.get('userId')
                         }, {
                             ...info.graphAttr()
                         })
-                        .then(res=>{})
-                        .catch(e=>{
-                            console.log(e)
+                        .then(res => {
+                        })
+                        .catch(e => {
+                            new ServerError(e)
                         })
                 }
             }

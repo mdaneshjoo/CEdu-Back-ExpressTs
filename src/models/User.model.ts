@@ -1,10 +1,14 @@
-import {CreateOptions, DataTypes, InstanceUpdateOptions, Op} from 'sequelize'
-import BaseModel from './base.model';
+import {CreateOptions, DataTypes, InstanceUpdateOptions, Op, Transactionable} from 'sequelize'
+import BaseModel from './Base.model';
 import {HookReturn} from "sequelize/types/lib/hooks";
 import {Hash} from "../libs/hash";
-import PersonalInfo from "./personal-info.model";
-import {Cy, cypher} from "../libs/Neo4j";
+import PersonalInfo from "./Personal-info.model";
+import {Neo4j, cypher} from "../libs/Neo4j";
 import ServerError from "../errors/serverError";
+import {node, relation} from "cypher-query-builder";
+import Subscriber_Channel from "./Subscriber-channel.model";
+import Channel from "./Channel.model";
+import {ValidationOptions} from "sequelize/types/lib/instance-validator";
 
 
 export default class User extends BaseModel {
@@ -38,10 +42,6 @@ export default class User extends BaseModel {
                 type: DataTypes.BOOLEAN,
                 defaultValue: false
             },
-            isPrivate: {
-                type: DataTypes.BOOLEAN,
-                defaultValue: false
-            },
             ...super.baseFields,
 
         }, {
@@ -60,18 +60,21 @@ export default class User extends BaseModel {
                     })
                 },
                 afterCreate(user: User, options: CreateOptions): HookReturn {
-                    return cypher
-                        .createNode('user', 'User', {...user.display()})
-                        .return('user')
-                        .run()
-                        .then(res => {
-                        })
+                    return Promise.all([
+                        cypher
+                            .createNode('user', 'User', {...user.display()})
+                            .run(),
+                        //
+                    ]).then(res => {
+                    })
                         .catch(e => {
                             console.log(e)
                         })
+
+
                 },
                 afterUpdate(user: User, options: CreateOptions): HookReturn {
-                    return new Cy()
+                    return new Neo4j()
                         .updateVar('user', 'User',
                             {id: user.get('id')},
                             {...user.grapgAttr()})
@@ -85,7 +88,7 @@ export default class User extends BaseModel {
         });
     }
 
-    id = this.get('id')
+    readonly id = this.get('id')
 
     static findByUsername(userName: string,): Promise<any> {
         return User.findOne({
@@ -101,12 +104,13 @@ export default class User extends BaseModel {
         })
     }
 
-    static _findOrCreate(userName: string, body: object): Promise<any> {
+    static _findOrCreate(userName: string, body: object,): Promise<any> {
         return User.findOrCreate({
             where: {
                 userName
-            }
-            , defaults: {...body}
+            },
+            defaults: {...body},
+
         })
     }
 
@@ -135,6 +139,19 @@ export default class User extends BaseModel {
                 allowNull: false,
                 name: 'userId'
             }
+        })
+        this.hasOne(models.Channel, {
+            as: 'channel',
+            foreignKey: {
+                allowNull: false,
+                name: 'ownerId'
+            }
+        })
+        this.belongsToMany(models.Channel, {
+            through: 'Subscriber_Channel',
+            as: 'subscribedChannels',
+            foreignKey: 'subscriberId'
+
         })
     }
 

@@ -1,10 +1,14 @@
 import {Request, Response, Router} from 'express'
 import IController from '../../../interfaces/controller.interface'
-import User from "../../../models/user.model";
+import User from "../../../models/User.model";
 import {sendError, success} from "../../../utils/helpers/response";
 import ServerError from "../../../errors/serverError";
-import eMessages from "../../../utils/statics/eMessages";
+import {eMessages} from "../../../utils/constants/eMessages";
 import JWT from "../../../libs/JWT";
+import passport from "../../../libs/passport";
+import AuthenticationMiddleware from "../../../middlewares/Authentication.middleware";
+import {sMessages} from "../../../utils/constants/SMessages";
+
 
 /**
  * @classdesc for login and signup
@@ -17,14 +21,16 @@ export default class AuthController implements IController {
     }
 
     init(): void {
-        this.router.post('/login', this.login)
-        this.router.post('/signup', this.signup)
+        const authMiddleware = new AuthenticationMiddleware()
+        this.router.post('/login', authMiddleware.controlLoginSignupBody, this.login)
+        this.router.post('/signup', authMiddleware.controlLoginSignupBody, this.signup)
+        this.router.post('/update', passport.token, authMiddleware.controlUpdateBody, this.updateAuth)
     }
 
     /**
      * @api {post} /auth/login Request For Login
      * @apiName Login
-     * @apiGroup AuthMiddleware
+     * @apiGroup Auth
      *
      * @apiParam {String} userName Required
      * @apiParam {String} password Required
@@ -48,18 +54,18 @@ export default class AuthController implements IController {
     private login({body}: Request, res: Response) {
         User.findByUsername(body.userName)
             .then(user => {
-                if (!user) throw new ServerError(eMessages.notFound)
+                if (!user) throw new ServerError(eMessages.WRONG_USER_OR_PASS)
                 return AuthController.makeResponse(user)
             })
             .then(success(res))
             .catch(sendError(res))
     }
 
-
+    //TODO make controller with socket for validate user exist when typing
     /**
      * @api {post} /auth/signup Request For register
      * @apiName Signup
-     * @apiGroup AuthMiddleware
+     * @apiGroup Auth
      *
      * @apiParam {String} userName Required
      * @apiParam {String} password Required
@@ -80,23 +86,56 @@ export default class AuthController implements IController {
      *                          token : <bearer-token>
      *                      }
      */
-    private signup({body}: Request, res: Response) {
+    private async signup({body}: Request, res: Response) {
         User._findOrCreate(body.userName, body)
             .then(([user, created]) => {
-                if (!created) throw new ServerError(eMessages.userExist)
+                if (!created) throw new ServerError(eMessages.USER_EXIST)
                 if (user) {
-                    return AuthController.makeResponse(user)
+                    return user
                 }
             })
-            .then(success(res))
+            .then((user) => {
+                return AuthController.makeResponse(user)
+            })
+            .then(success(res, sMessages.USER_CREATED))
             .catch(sendError(res))
 
 
     }
 
-    //TODO make controller for update user
-    //TODO make controller with socket for validate user exist when typing
 
+    /**
+     * @api {post} /auth/update Request For update authentication
+     * @apiName Update Auth
+     * @apiGroup Auth
+     *
+     * @apiParam {String} userName Required
+     * @apiParam {String} password Required
+     * @apiParam {String} email
+     * @apiParam {String} phoneNumber
+     * @apiParamExample {json} update params
+     *                  {
+     *                      "userName":"foo",
+     *                      "password":"bar"
+     *                  }
+     * @apiSuccess (200) {String} message for updating successfully
+     * @apiSuccessExample {json} Success-Response:
+     *                      {
+     *                          status:ok
+     *                          code:2004,
+     *                          message: update successful
+     *                      }
+     */
+    private updateAuth({body, user}: Request, res: Response) {
+        User.findOne({
+            where: {id: user['id']}
+        }).then(user => {
+            if (user) return user.update({...body})
+        })
+            .then(success(res, sMessages.UPDATE_AUTH_OK))
+            .catch(sendError(res))
+
+    }
 
     /**
      * make response object with koken and user detail exept password
@@ -104,7 +143,7 @@ export default class AuthController implements IController {
      * @param {any} meta - add extra field
      * @return object - returns object two property user and token
      * */
-    private static makeResponse(user: User,meta=null): object {
+    private static makeResponse(user: User, meta = null): object {
         return {
             user: user.display(),
             meta,

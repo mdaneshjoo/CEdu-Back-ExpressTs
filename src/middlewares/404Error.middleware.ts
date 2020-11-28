@@ -1,14 +1,18 @@
 import ServerError from "../errors/serverError"
 import {Request, Response} from 'express'
 import config from "../configs/config";
-import eMessages from "../utils/statics/eMessages";
-import multer = require("multer");
+import {eMessages} from "../utils/constants/eMessages";
+import {HandelErrors} from "../errors/HandelErrors";
 
 export const notFoundPage = (req: Request, res: Response, next) => {
-    next(new ServerError(eMessages.routeNotFound))
+    next(new ServerError(eMessages.ROUTE_NOT_FOUND))
 }
 
 export const errorHandler = async (error, req, res, next) => {
-    if (config.env === 'development') console.log(error)
-    return res.status(error.code || 500).json({status: 'error', code: error.code || 500, message: error.message})
+    const e = new HandelErrors(error)
+    return res.status(e.properError.statusCode).json({
+        status: 'error',
+        code: e.properError.code,
+        message: e.properError.message
+    })
 }

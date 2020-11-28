@@ -1,8 +1,8 @@
 import * as passport from "passport";
 import {ExtractJwt, Strategy as JwtStrategy} from "passport-jwt";
 import config from "../configs/config";
-import eMessages from "../utils/statics/eMessages";
-import User from "../models/user.model";
+import {eMessages} from "../utils/constants/eMessages";
+import User from "../models/User.model";
 import {sendError} from "../utils/helpers/response";
 
 class Passport {
@@ -18,9 +18,9 @@ class Passport {
        passport.use(new JwtStrategy(opts, function (jwt_payload, done) {
             User.findByPk(jwt_payload.id).then(user => {
                 if (user) return done(null, user.display())
-                return done(eMessages.notAuthorized, false)
+                return done(eMessages.UNAUTHORIZED, false)
             }).catch(e => {
-                return done(eMessages.notAuthorized, false)
+                return done(eMessages.UNAUTHORIZED, false)
             })
 
         }));

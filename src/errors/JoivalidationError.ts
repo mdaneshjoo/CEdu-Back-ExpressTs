@@ -1,8 +1,7 @@
 import {IErrorPropertys} from "../interfaces/errorMessages.interface";
 
-export default class ServerError extends Error {
+export default class JoivalidationError extends Error {
     code
-
     constructor(message: IErrorPropertys) {
         if (!message.statusCode) message.statusCode = message.code || 500
         super(message.message)

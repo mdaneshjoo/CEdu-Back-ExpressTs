@@ -1,12 +1,11 @@
 import {Request, Response, Router} from 'express'
 import IController from '../../../interfaces/controller.interface'
-import PersonalInfo from "../../../models/personal-info.model";
+import PersonalInfo from "../../../models/Personal-info.model";
 import personalInfoBody from "../../../middlewares/personal-info/saveValidator.middleware";
 import {uploadAvatar} from "../../../middlewares/upload/upload.middleware";
 import {sendError, success} from "../../../utils/helpers/response";
 import * as fs from 'fs'
 import ServerError from "../../../errors/serverError";
-import {cypher} from "../../../libs/Neo4j";
 
 /**
  * @classdesc this class used for control user personal info
@@ -21,7 +20,6 @@ export default class PersonalInfoController implements IController {
         this.router.post('/info', uploadAvatar, personalInfoBody, this.save)
         this.router.get('/info', this.getDetail)
     }
-
     /**
      * @api {post} /user/info Request for saving user info
      * @apiName save Personal info

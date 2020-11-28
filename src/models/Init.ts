@@ -1,5 +1,7 @@
-import User from './user.model'
-import PersonalInfo from "./personal-info.model";
+import User from './User.model'
+import PersonalInfo from "./Personal-info.model";
+import Channel from "./Channel.model";
+import Subscriber_Channel from "./Subscriber-channel.model";
 export default class ModelInit{
     constructor(seqeulize){
         this.initModels(seqeulize)
@@ -7,7 +9,9 @@ export default class ModelInit{
     private initModels(seqeulize) {
         const models = {
             User:User.init(seqeulize),
-            PersonalInfo:PersonalInfo.init(seqeulize)
+            PersonalInfo:PersonalInfo.init(seqeulize),
+            Channel:Channel.init(seqeulize),
+            Subscriber_Channel:Subscriber_Channel.init(seqeulize)
             // more models here .........
         }
         for (const key in models) {

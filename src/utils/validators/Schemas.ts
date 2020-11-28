@@ -1,6 +1,10 @@
 import * as Joi from 'joi'
 
+/**
+ * @classdesc this is schema class for joi validator. all schemas is here
+ * */
 export default class Schemas {
+    // auth schema
     private _authSchema = {
         userName: Joi.string()
             .alphanum()
@@ -16,9 +20,13 @@ export default class Schemas {
         email: Joi.string()
             .email({minDomainSegments: 2}),
 
-        phoneNumber: Joi.string()
-    }
+        phoneNumber: Joi.string(),
 
+        isUni: Joi.boolean()
+    }
+    /**
+     * get authentication schema
+     * */
     get authSchema() {
         return this._authSchema
     }
@@ -27,17 +35,37 @@ export default class Schemas {
         this._authSchema = schema
     }
 
-
+    // personal info schema
     private _personalInfoSchema = {
-        name: Joi.string(),
-        lastName: Joi.string(),
+        name: Joi.string().required(),
+        lastName: Joi.string().required(),
     }
-
+    /**
+     * get personal info body schema
+     * */
     get personalInfoSchema() {
         return this._personalInfoSchema
     }
+
     set personalInfoSchema(schema: any) {
         this._personalInfoSchema = schema
     }
 
+
+    // update auth schema
+
+    private _updateAuth = {
+        password: Joi.string()
+            .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')),
+        email: Joi.string()
+            .email({minDomainSegments: 2}),
+        phoneNumber: Joi.string(),
+    }
+    /**
+     * get authentication body update schema
+     * @return updateAuth schema object
+     * */
+    get updateAuth() {
+        return this._updateAuth
+    }
 }

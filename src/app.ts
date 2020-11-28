@@ -4,8 +4,9 @@ import {Application} from 'express';
 const chalk = require('chalk');
 import {Sequelize, Dialect} from 'sequelize';
 import Router from './interfaces/router.interface'
-import InitModels from './models/init.model'
+import InitModels from './models/Init'
 import {Neo4jInitial} from "./libs/Neo4j";
+import {_Seqeulize} from "./libs/Seqeulize";
 
 export default class App {
     private app: Application;
@@ -58,6 +59,7 @@ export default class App {
         seq.authenticate().then(() => {
             console.log(chalk.green('Database Connection has been established successfully.'));
             new InitModels(seq)
+            new _Seqeulize(seq)
             if (this.Env === 'development')
                 seq.sync(options.sync).then(() => {
                     console.log(chalk.green(`Models Are Synced ${options.sync.force ? 'By Force' : ''}`));

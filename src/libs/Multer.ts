@@ -4,7 +4,7 @@ import * as multerS3 from 'multer-s3'
 import * as aws from 'aws-sdk'
 import config from "../configs/config";
 import ServerError from "../errors/serverError";
-import eMessages from "../utils/statics/eMessages";
+import {eMessages} from "../utils/constants/eMessages";
 import {IMulterStorage} from "../interfaces/multer.interface";
 import * as _ from 'lodash'
 import * as fs from "fs";
@@ -26,11 +26,11 @@ export default class Multer {
             fileFilter(req, file: Express.Multer.File, callback: _multer.FileFilterCallback) {
                 if (mimetype) {
                     !_.has(mimetype, file.mimetype) ?
-                        callback(new ServerError(eMessages.fileTypeNotAcceptable)) :
+                        callback(new ServerError(eMessages.FILE_TYPE_NOT_ACCEPTABLE)) :
                         callback(null, true)
 
                 } else {
-                    callback(new ServerError(eMessages.mimetypeNotProvide))
+                    callback(new ServerError(eMessages.MIME_TYPE_NOT_PROVIDE))
                 }
             },
             limits: {
@@ -113,7 +113,7 @@ export default class Multer {
     }
 
     private handelError(res: Response, err) {
-        if (err.code === 'LIMIT_FILE_SIZE') err.code = eMessages.fileTypeNotAcceptable.code
+        if (err.code === 'LIMIT_FILE_SIZE') err.code = eMessages.FILE_TYPE_NOT_ACCEPTABLE.code
         sendError(res)(err)
     }
 

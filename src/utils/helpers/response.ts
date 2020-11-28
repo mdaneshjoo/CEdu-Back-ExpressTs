@@ -1,23 +1,41 @@
 import {Response} from 'express'
-import eMessages from "../statics/eMessages";
-import config from "../../configs/config";
+import {HandelErrors} from "../../errors/HandelErrors";
+import IResponse from "../../interfaces/successResponse.interface";
+import {sMessages} from "../constants/SMessages";
 
+
+/**
+ * @param {Response} res - its required
+ * @return {Response} error - response an error object
+ * @example {
+ *       status: 'error',
+ *      code: 1001,
+ *     message: notfound
+ *     }
+ * */
 export const sendError = (res: Response) => (e?) => {
-    if (config.env === 'development') console.log(e || eMessages.notFound)
-    if (!e) e = eMessages.notFound
-    return res.status(e.code).json({
+    const error = new HandelErrors(e)
+    return res.status(error.properError.statusCode).json({
         status: 'error',
-        code: e.code,
-        message: e.message
+        code: error.properError.code,
+        message: error.properError.message
     })
 }
 
-export const success = (res: Response) => (entity) => {
+
+/**
+ * @param {Response} res - its required
+ * @param {IResponse} detail - detail for sending message
+ * @return {Response} object - response an object
+ * */
+export const success = (res: Response, detail?: IResponse) => (entity) => {
+    if (!detail) detail = sMessages.DEFAULT
     if (entity)
-        return res.json({
-            status: 'ok',
-            code: 200,
-            data: entity
+        return res.status(detail.statusCode).json({
+            status:detail.statusCode,
+            code: detail.code,
+            message: detail.message,
+            data: detail.withData ? entity : null
         })
     return sendError(res)()
 }
