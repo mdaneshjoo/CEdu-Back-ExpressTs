@@ -1,5 +1,6 @@
 import * as _cypher from 'cypher-query-builder'
 import {Connection} from 'cypher-query-builder'
+import {Exporter} from "../utils/helpers/Piper";
 
 let cypher: Connection
 

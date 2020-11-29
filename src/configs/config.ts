@@ -2,6 +2,7 @@ import {Dialect} from 'sequelize'
 import * as dotenv from 'dotenv';
 import * as path from 'path'
 import ENVerror from '../errors/envError'
+import { options } from 'joi';
 
 dotenv.config({
     path: path.join(process.cwd(), '.env'),
@@ -22,6 +23,9 @@ const config = {
     host: process.env.HOST || '0.0.0.0',
     secret: requiredEnv('SECRET'),
     JWTexp: process.env.JWT_EXP || '4week',
+    corsOptions:{
+        origin:'*'
+    },
     dbconfig: {
         database: requiredEnv('DB_NAME'),
         username: requiredEnv("DB_USERNAME"),
@@ -58,9 +62,16 @@ const config = {
         url: '',
         publishHere: process.env.PUBLISH_Here || false,
         rootDist: process.env.UPLOAD_DIST || 'uploads'
+    },
+    socket:{
+        port:process.env.SOCKET_PORT ||  10000,
+        options:{
+            cors:{}
+        }
     }
 
 }
 config.uploadHere.url = config.host + ':' + config.port + '/'
+config.socket.options.cors=config.corsOptions
 
 export default {...config}

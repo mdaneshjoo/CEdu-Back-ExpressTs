@@ -8,6 +8,7 @@ import JWT from "../../../libs/JWT";
 import passport from "../../../libs/passport";
 import AuthenticationMiddleware from "../../../middlewares/Authentication.middleware";
 import {sMessages} from "../../../utils/constants/SMessages";
+import {Importer} from "../../../utils/helpers/Piper";
 
 
 /**
@@ -61,7 +62,6 @@ export default class AuthController implements IController {
             .catch(sendError(res))
     }
 
-    //TODO make controller with socket for validate user exist when typing
     /**
      * @api {post} /auth/signup Request For register
      * @apiName Signup
@@ -127,6 +127,8 @@ export default class AuthController implements IController {
      *                      }
      */
     private updateAuth({body, user}: Request, res: Response) {
+       const test= Importer(['test1'])
+        console.log(test)
         User.findOne({
             where: {id: user['id']}
         }).then(user => {
