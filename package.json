@@ -14,7 +14,7 @@
     "g:apidoc": "npx apidoc -i src/ -o apidoc/ -t ./node_modules/apidoc-plugin-websocket/template",
     "g:migration": "npx sequelize-cli migration:generate --name",
     "migrate": "npx sequelize-cli db:migrate",
-    "migration:revert": "npx sequelize-cli db:migrate:undo"
+    "migrate:revert": "npx sequelize-cli db:migrate:undo"
   },
   "author": "Em-djoo",
   "license": "ISC",

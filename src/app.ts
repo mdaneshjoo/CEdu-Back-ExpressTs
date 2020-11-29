@@ -11,6 +11,7 @@ import { SocketIo } from "./libs/SocektIo";
 import { Server } from "socket.io";
 import config from './configs/config'
 
+
 export default class App {
   private app: Application;
    httpServer;

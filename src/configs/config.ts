@@ -2,7 +2,6 @@ import {Dialect} from 'sequelize'
 import * as dotenv from 'dotenv';
 import * as path from 'path'
 import ENVerror from '../errors/envError'
-import { options } from 'joi';
 
 dotenv.config({
     path: path.join(process.cwd(), '.env'),
@@ -36,7 +35,8 @@ const config = {
             meta: {
                 logging: false,
                 timestamp: false,
-                paranoid: true
+                paranoid: true,
+                freezeTableName: true,
             },
             sync: {force: false} // force true  drop table and make it again
         }
