@@ -1,17 +1,15 @@
 import {DataTypes} from 'sequelize'
 import BaseModel from './Base.model';
-
-
-
 export default class Subscriber_Channel extends BaseModel {
     static init(sequelize) {
         return super.init({
+            ...super.uuidID,
             subscriberId: {
-                type: DataTypes.BIGINT,
+                type: DataTypes.UUID,
                 allowNull: false,
             },
             channelId:{
-                type: DataTypes.BIGINT,
+                type: DataTypes.UUID,
                 allowNull:false
             },
             ...super.baseFields,
@@ -19,26 +17,6 @@ export default class Subscriber_Channel extends BaseModel {
         }, {
             sequelize
         });
-    }
-
-    id = this.get('id')
-
-    display() {
-        let user = {}
-        const neededFileds = ['id']
-        neededFileds.map(field => {
-            user[field] = this.get(field)
-        })
-        return user
-    }
-
-    graphAttr() {
-        let user = {}
-        const neededFileds = ['id']
-        neededFileds.map(field => {
-            user[field] = `'${this.get(field)}'`
-        })
-        return user
     }
 
     static associate(models) {

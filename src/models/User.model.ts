@@ -4,16 +4,12 @@ import {HookReturn} from "sequelize/types/lib/hooks";
 import {Hash} from "../libs/hash";
 import PersonalInfo from "./Personal-info.model";
 import {Neo4j, cypher} from "../libs/Neo4j";
-import ServerError from "../errors/serverError";
-import {node, relation} from "cypher-query-builder";
-import Subscriber_Channel from "./Subscriber-channel.model";
-import Channel from "./Channel.model";
-import {ValidationOptions} from "sequelize/types/lib/instance-validator";
 
 
 export default class User extends BaseModel {
     static init(sequelize) {
         return super.init({
+         ...super.uuidID,
             userName: {
                 type: DataTypes.STRING,
                 allowNull: false,
@@ -140,8 +136,8 @@ export default class User extends BaseModel {
                 name: 'userId'
             }
         })
-        this.hasOne(models.Channel, {
-            as: 'channel',
+        this.hasMany(models.Channels, {
+            as: 'channels',
             foreignKey: {
                 allowNull: false,
                 name: 'ownerId'
@@ -152,6 +148,63 @@ export default class User extends BaseModel {
             as: 'subscribedChannels',
             foreignKey: 'subscriberId'
 
+        })
+
+        this.hasMany(models.Groups, {
+            as: 'groups',
+            foreignKey: {
+                allowNull: false,
+                name: 'ownerId'
+            }
+        })
+        this.belongsToMany(models.Groups, {
+            through: 'Members_Group',
+            as: 'joinedGroups',
+            foreignKey: 'memberId'
+
+        })
+
+        this.hasMany(models.Requests, {
+            as: 'requests',
+            foreignKey: {
+                allowNull: false,
+                name: 'userId'
+            }
+        })
+        this.hasMany(models.Notifications, {
+            as: 'notifications',
+            foreignKey: {
+                allowNull: false,
+                name: 'userId'
+            }
+        })
+        this.hasMany(models.Settings, {
+            as: 'settings',
+            foreignKey: {
+                allowNull: false,
+                name: 'userId'
+            }
+        })
+        this.hasMany(models.Attachments, {
+            as: 'attached',
+            foreignKey: {
+                allowNull: false,
+                name: 'userId'
+            }
+        })
+        this.hasMany(models.CaseHistorys, {
+            as: 'historys',
+            foreignKey: {
+                allowNull: false,
+                name: 'userId'
+            }
+        })
+        this.hasMany(models.Quiz, {
+            as: 'quizzes',
+            foreignKey: {
+                allowNull: false,
+                name: 'userId'
+            }
         })
     }
 

@@ -36,9 +36,9 @@ const config = {
                 logging: false,
                 timestamp: false,
                 paranoid: true,
-                freezeTableName: true,
+                // freezeTableName: true,
             },
-            sync: {force: false} // force true  drop table and make it again
+            sync: {force: true} // force true  drop table and make it again
         }
     },
     neo4j: {

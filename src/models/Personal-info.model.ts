@@ -1,17 +1,17 @@
 import {CreateOptions, DataTypes} from 'sequelize'
 import BaseModel from './Base.model';
 import {HookReturn} from "sequelize/types/lib/hooks";
-import {cypher, Neo4j} from "../libs/Neo4j";
-import {node} from "cypher-query-builder";
-import {assert} from "joi";
+import { Neo4j} from "../libs/Neo4j";
 import ServerError from "../errors/serverError";
 
 
 export default class PersonalInfo extends BaseModel {
     static init(sequelize) {
         return super.init({
+            ...super.uuidID,
+
             userId: {
-                type: DataTypes.BIGINT
+                type: DataTypes.UUID
             },
             name: {
                 type:DataTypes.STRING,
@@ -31,7 +31,6 @@ export default class PersonalInfo extends BaseModel {
             sequelize,
             hooks: {
                 afterCreate(info: PersonalInfo, options: CreateOptions): HookReturn {
-                    // TODO make here clean and test
                     const neo4j = new Neo4j()
                     return neo4j.findAllNode('user', 'User',
                         {user: {id: info.get('userId')}},

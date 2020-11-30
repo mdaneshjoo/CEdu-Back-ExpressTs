@@ -1,17 +1,16 @@
 import {CreateOptions, DataTypes, InstanceUpdateOptions, Op} from 'sequelize'
 import BaseModel from './Base.model';
 import {HookReturn} from "sequelize/types/lib/hooks";
-import User from "./User.model";
 import PersonalInfo from "./Personal-info.model";
 
 
-export default class Channel extends BaseModel {
-    ownerId = this.get('')
+export default class Channels extends BaseModel {
 
     static init(sequelize) {
         return super.init({
+            ...super.uuidID,
             ownerId: {
-                type: DataTypes.BIGINT,
+                type: DataTypes.UUID,
                 allowNull: false,
             },
             title: {
@@ -19,7 +18,9 @@ export default class Channel extends BaseModel {
                 type: DataTypes.STRING,
                 set: (title) => {
                     if (!title) {
-                        const userId: any = this.prototype.ownerId
+                        const userId: any = this.prototype.get('ownerId')
+                        console.log(userId);
+                        
                         PersonalInfo.findOne({
                             where:{userId},
                             raw:true
@@ -42,17 +43,17 @@ export default class Channel extends BaseModel {
         }, {
             sequelize,
             hooks: {
-                beforeCreate(user: Channel, options) {
+                beforeCreate(user: Channels, options) {
 
                 },
-                beforeUpdate(user: Channel, options: InstanceUpdateOptions): HookReturn {
+                beforeUpdate(user: Channels, options: InstanceUpdateOptions): HookReturn {
 
                 },
-                afterCreate(user: Channel, options: CreateOptions): HookReturn {
+                afterCreate(user: Channels, options: CreateOptions): HookReturn {
 
 
                 },
-                afterUpdate(user: Channel, options: CreateOptions): HookReturn {
+                afterUpdate(user: Channels, options: CreateOptions): HookReturn {
 
                 }
             }
@@ -91,6 +92,11 @@ export default class Channel extends BaseModel {
             through: 'Subscriber_Channel',
             as: 'subscribers',
             foreignKey: 'subscriberId'
+        })
+
+        this.hasMany(models.Posts,{
+            foreignKey:'channelId',
+            as:'posts'
         })
     }
 
