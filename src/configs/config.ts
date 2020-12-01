@@ -25,6 +25,18 @@ const config = {
     corsOptions:{
         origin:'*'
     },
+    email: {
+        smtpConfig: {
+          host: process.env.SMTP_HOST || 'smtp.sendgrid.net',
+          port: 465,
+          secure: true,
+          auth: {
+            user: process.env.SMTP_USER,
+            pass: process.env.SMTP_PASS
+          }
+        },
+        from: process.env.EMAIL_FROM
+      },
     dbconfig: {
         database: requiredEnv('DB_NAME'),
         username: requiredEnv("DB_USERNAME"),

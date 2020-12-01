@@ -19,7 +19,8 @@ export const sMessages = {
         code: 3002,
         statusCode: StatusCodes.CREATED,
         withData: true
-    }
+    },
+    
 
 }
 
