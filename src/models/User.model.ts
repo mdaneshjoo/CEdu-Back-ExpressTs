@@ -106,7 +106,6 @@ export default class User extends BaseModel {
                 userName
             },
             defaults: {...body},
-
         })
     }
 
@@ -143,7 +142,7 @@ export default class User extends BaseModel {
                 name: 'ownerId'
             }
         })
-        this.belongsToMany(models.Channel, {
+        this.belongsToMany(models.Channels, {
             through: 'Subscriber_Channel',
             as: 'subscribedChannels',
             foreignKey: 'subscriberId'

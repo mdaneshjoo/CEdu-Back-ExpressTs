@@ -13,7 +13,7 @@ export default class Questions extends BaseModel {
         question: {
           type: DataTypes.STRING,
         },
-        answers: {
+        qanswers: {
           type: DataTypes.STRING,
         },
         needText: {

@@ -28,7 +28,7 @@ export default class Groups extends BaseModel {
   }
 
   static associate(models) {
-    this.hasMany(models.User, {
+    this.belongsTo(models.User, {
       as: "user",
       foreignKey: {
         allowNull: false,

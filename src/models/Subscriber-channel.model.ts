@@ -20,7 +20,7 @@ export default class Subscriber_Channel extends BaseModel {
     }
 
     static associate(models) {
-        this.belongsTo(models.Channel,{
+        this.belongsTo(models.Channels,{
             as:'channel',
             foreignKey:{
                 allowNull:false,

@@ -22,7 +22,6 @@ export default class CaseHistorys extends BaseModel {
         },
         startDate: {
           type: DataTypes.DATEONLY,
-          defaultValue: false,
         },
         endDate: {
           type: DataTypes.DATEONLY,

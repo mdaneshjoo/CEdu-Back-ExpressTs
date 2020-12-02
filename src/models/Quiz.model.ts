@@ -2,7 +2,7 @@ import { DataTypes } from "sequelize";
 import { v4 } from "uuid";
 import BaseModel from "./Base.model";
 
-export default class Posts extends BaseModel {
+export default class Quiz extends BaseModel {
   static init(sequelize) {
     return super.init(
       {
