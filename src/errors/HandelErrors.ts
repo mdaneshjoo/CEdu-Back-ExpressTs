@@ -21,7 +21,7 @@ export class HandelErrors {
     }
 
     private defaultError(e) {
-        if (e instanceof ServerError) this.errorProperty = systemErrorMessages.default(e)
+        if (e instanceof ServerError||e instanceof TypeError) this.errorProperty = systemErrorMessages.default(e)
     }
 
     private seqeulizeError(e) {

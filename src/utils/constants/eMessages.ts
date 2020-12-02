@@ -1,5 +1,5 @@
-import {StatusCodes} from "http-status-codes";
-import {ValidationError} from "sequelize";
+import { StatusCodes } from "http-status-codes";
+import { ValidationError } from "sequelize";
 import IResponse from "../../interfaces/successResponse.interface";
 
 export const eMessages = {
@@ -13,10 +13,12 @@ export const eMessages = {
         code: 1001,
         statusCode: StatusCodes.BAD_REQUEST
     },
-    ROUTE_NOT_FOUND: {
-        message: 'Destination Not Exist',
-        code: 1002,
-        statusCode: StatusCodes.BAD_REQUEST
+    ROUTE_NOT_FOUND: (dist) => {
+        return {
+            message: `you want to go ${dist} but this distination Dosnot exist`,
+            code: 1002,
+            statusCode: StatusCodes.BAD_REQUEST
+        }
     },
     UNAUTHORIZED: {
         message: 'You have not access to this part',
@@ -62,10 +64,10 @@ export const eMessages = {
 }
 
 export const systemErrorMessages = {
-    default: (e: Error) => {
+    default: (e) => {
         return {
             code: 2001,
-            statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+            statusCode: e.code ? e.code : StatusCodes.INTERNAL_SERVER_ERROR,
             message: e.message
         }
     },

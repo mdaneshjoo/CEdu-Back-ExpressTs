@@ -4,7 +4,7 @@ export default class ServerError extends Error {
     code
 
     constructor(message: IErrorPropertys) {
-        if (!message.statusCode) message.statusCode = message.code || 500
+        if (!message.statusCode) message.statusCode = 500
         super(message.message)
         this.code = message.statusCode
     }
