@@ -10,13 +10,14 @@ import AuthenticationMiddleware from "../../../middlewares/Authentication.middle
 import { sMessages } from "../../../utils/constants/SMessages";
 import { Importer } from "../../../utils/helpers/Piper";
 import Email from "../../../libs/Email";
-
+import * as _ from 'lodash'
+import PersonalInfo from "../../../models/Personal-info.model";
 /**
  * @classdesc for login and signup
  * */
 export default class AuthController implements IController {
   router = Router();
-    private email=new Email()
+
   constructor() {
     this.init();
   }
@@ -33,7 +34,7 @@ export default class AuthController implements IController {
       authMiddleware.controlLoginSignupBody,
       this.signup
     );
-    this.router.post(
+    this.router.put(
       "/update",
       passport.token,
       authMiddleware.controlUpdateBody,
@@ -65,15 +66,14 @@ export default class AuthController implements IController {
    *                          token : <bearer-token>
    *                      }
    */
-  private login({ body }: Request, res: Response) {
+  private login({ body, ip }: Request, res: Response) {
     User.findByUsername(body.userName)
       .then((user) => {
         if (!user) {
           throw new ServerError(eMessages.WRONG_USER_OR_PASS);
-        //   TODO send email
         }
-        // TODO send Email
-
+        // send Email
+        new Email().loginReport(user.email, ip)
         return AuthController.makeResponse(user);
       })
       .then(success(res))
@@ -104,26 +104,23 @@ export default class AuthController implements IController {
    *                          token : <bearer-token>
    *                      }
    */
-  private async signup({ body }: Request, res: Response) {
+  private signup({ body }: Request, res: Response) {
     User._findOrCreate(body.userName, body)
-      .then(([user, created]) => {
+      .then(async ([user, created]) => {
         if (!created) throw new ServerError(eMessages.USER_EXIST);
-        if (user) {
-          return user;
-        }
-      })
-      .then((user) => {
-        // TODO send email
-        this.informUser({by:'',test:1})
-        
-        return AuthController.makeResponse(user);
+        new Email().sendRegisterationEmail({
+          email: user['email'],
+          username: user.userName,
+          password: user.password
+        })
+        if (user) return AuthController.makeResponse(user);
       })
       .then(success(res, sMessages.USER_CREATED))
       .catch(sendError(res));
   }
 
   /**
-   * @api {post} /auth/update Request For update authentication
+   * @api {put} /auth/update Request For update authentication
    * @apiName Update Auth
    * @apiGroup Auth
    *
@@ -171,7 +168,6 @@ export default class AuthController implements IController {
     };
   }
 
-  private informUser(info:{by:string[];test:number}){
-    this.email.sendRegisterationEmail('')
-  }
+
 }
+

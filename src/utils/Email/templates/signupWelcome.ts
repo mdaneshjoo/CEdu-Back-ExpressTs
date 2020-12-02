@@ -4,12 +4,19 @@ const html =
     `
 {{message}}
 {{email}}
-{{firstname}}
 {{username}}
 {{password}}
 `
-
-export const welcome = (email,firstname,username,password,message) => { 
-let temp=_.template(html)
-return temp({email,firstname,username,password,message})
+/**
+ * template for user creadentials
+ * @param email 
+ * @param firstname 
+ * @param username 
+ * @param password 
+ * @param message 
+ */
+export const welcome = (userCredentioan: {
+     email: string; username: string; password: string; message: string; }) => {
+    let temp = _.template(html)
+    return temp({ ...userCredentioan })
 }

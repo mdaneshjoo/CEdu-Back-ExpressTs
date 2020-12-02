@@ -50,7 +50,7 @@ const config = {
                 paranoid: true,
                 // freezeTableName: true,
             },
-            sync: {force: true} // force true  drop table and make it again
+            sync: {force: false} // force true  drop table and make it again
         }
     },
     neo4j: {
