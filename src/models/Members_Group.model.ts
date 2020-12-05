@@ -21,6 +21,8 @@ export default class Members_Group extends BaseModel {
       },
       {
         sequelize,
+        paranoid: true,
+            timestamps:true,
         hooks: {},
       }
     );

@@ -24,6 +24,8 @@ export default class Questions extends BaseModel {
       },
       {
         sequelize,
+        paranoid: true,
+            timestamps:true,
         hooks: {},
       }
     );

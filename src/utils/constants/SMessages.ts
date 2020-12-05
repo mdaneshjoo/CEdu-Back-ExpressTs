@@ -20,6 +20,12 @@ export const sMessages = {
         statusCode: StatusCodes.CREATED,
         withData: true
     },
+    DELETE_OK:{
+        message: 'Deletion was successful',
+        code: 3004,
+        statusCode: StatusCodes.CREATED,
+        withData: true
+    }
     
 
 }

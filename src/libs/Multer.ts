@@ -105,9 +105,8 @@ export default class Multer {
     fileMimetype: string,
     mimetypes
   ): string {
-    return `${fileName}-${Date.now().toString()}.${
-      mimetypes[fileMimetype].extension
-    }`;
+    return `${fileName}-${Date.now().toString()}.${mimetypes[fileMimetype].extension
+      }`;
   }
 
   /**
@@ -169,7 +168,8 @@ export default class Multer {
         res,
         (err) => {
           if (err) return this.handelError(res, err);
-          req.file.url = config.uploadHere.url + req.file.path;
+          if (req.file)
+            req.file.url = config.uploadHere.url + req.file.path;
           next();
         }
       );

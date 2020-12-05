@@ -15,6 +15,8 @@ export default class Settings extends BaseModel {
       },
       {
         sequelize,
+        paranoid: true,
+            timestamps:true,
         hooks: {},
       }
     );

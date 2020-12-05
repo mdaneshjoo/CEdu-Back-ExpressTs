@@ -30,6 +30,8 @@ export default class CaseHistorys extends BaseModel {
       },
       {
         sequelize,
+        paranoid: true,
+            timestamps:true,
         hooks: {},
       }
     );

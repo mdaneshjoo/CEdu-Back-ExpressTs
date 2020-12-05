@@ -23,12 +23,13 @@ export default class PersonalInfo extends BaseModel {
             },
             avatar: {
                 type:DataTypes.STRING,
-                defaultValue:'/constants/images/default-avatar.png'
             },
             ...super.baseFields,
 
         }, {
             sequelize,
+            paranoid: true,
+            timestamps:true,
             hooks: {
                 afterCreate(info: PersonalInfo, options: CreateOptions): HookReturn {
                     const neo4j = new Neo4j()

@@ -35,6 +35,8 @@ export default class Requests extends BaseModel {
       },
       {
         sequelize,
+        paranoid: true,
+            timestamps:true,
         hooks: {},
       }
     );

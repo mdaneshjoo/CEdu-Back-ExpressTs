@@ -11,7 +11,7 @@ export default class Attachments extends BaseModel {
           type: DataTypes.UUID,
           allowNull: false,
         },
-        uuid: {
+        fileUuid: {
           type: DataTypes.UUID,
           defaultValue: v4(),
         },
@@ -23,6 +23,8 @@ export default class Attachments extends BaseModel {
       },
       {
         sequelize,
+        paranoid: true,
+            timestamps:true,
         hooks: {},
       }
     );

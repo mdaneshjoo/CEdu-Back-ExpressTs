@@ -1,28 +1,28 @@
-import { Model, DataTypes } from "sequelize";
+import { Model, DataTypes,Sequelize } from "sequelize";
 
-import { v4 } from "uuid";
+import {v4} from "uuid";
 
 export default class BaseModel extends Model {
   static uuidID = {
-    id: {
+     id: {
       allowNull: false,
-      primaryKey: true,
       type: DataTypes.UUID,
-      defaultValue: v4(),
+      primaryKey: true,
+      defaultValue:Sequelize.literal('uuid_generate_v4()')
     },
   };
   static baseFields = {
-    deletedAt: {
-      type: DataTypes.DATEONLY,
-      allowNull: true,
-    },
-    createdAt: {
-      type: DataTypes.DATEONLY,
-      allowNull: false,
-    },
-    updatedAt: {
-      type: DataTypes.DATEONLY,
-      allowNull: false,
-    },
+    // deletedAt: {
+    //   type: DataTypes.DATE,
+    //   allowNull: true,
+    // },
+    // createdAt: {
+    //   type: DataTypes.DATE,
+    //   allowNull: false,
+    // },
+    // updatedAt: {
+    //   type: DataTypes.DATE,
+    //   allowNull: false,
+    // },
   };
 }

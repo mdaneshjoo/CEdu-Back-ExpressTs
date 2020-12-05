@@ -108,11 +108,7 @@ export default class AuthController implements IController {
     User._findOrCreate(body.userName, body)
       .then(async ([user, created]) => {
         if (!created) throw new ServerError(eMessages.USER_EXIST);
-        new Email().sendRegisterationEmail({
-          email: user['email'],
-          username: user.userName,
-          password: user.password
-        })
+
         if (user) return AuthController.makeResponse(user);
       })
       .then(success(res, sMessages.USER_CREATED))
@@ -154,6 +150,8 @@ export default class AuthController implements IController {
       .catch(sendError(res));
   }
 
+ 
+
   /**
    * make response object with koken and user detail exept password
    * @param {User} user - user instance
@@ -164,7 +162,7 @@ export default class AuthController implements IController {
     return {
       user: user.display(),
       meta,
-      token: JWT.getToken(<number>user.id),
+      token: JWT.getToken(<number>user.id, { userName: user['userName'] }),
     };
   }
 

@@ -18,7 +18,7 @@ export default class Schemas {
 
 
         email: Joi.string()
-            .email({minDomainSegments: 2}),
+            .email({ minDomainSegments: 2 }),
 
         phoneNumber: Joi.string(),
 
@@ -58,7 +58,7 @@ export default class Schemas {
         password: Joi.string()
             .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')),
         email: Joi.string()
-            .email({minDomainSegments: 2}),
+            .email({ minDomainSegments: 2 }),
         phoneNumber: Joi.string(),
     }
     /**
@@ -68,4 +68,18 @@ export default class Schemas {
     get updateAuth() {
         return this._updateAuth
     }
+
+    //new channel create need this propertis
+    #createChannelBody = {
+        isPrivate: Joi.boolean().empty(null),
+        title: Joi.string().empty(null)
+    }
+    /** 
+     * get new channel body data validation schemas
+     * @return {Object} schema
+     */
+    get createChannelBody() {
+        return this.#createChannelBody
+    }
+
 }

@@ -21,7 +21,7 @@ const config = {
     port: process.env.PORT || 10000,
     host: process.env.HOST || '0.0.0.0',
     secret: requiredEnv('SECRET'),
-    JWTexp: process.env.JWT_EXP || '4week',
+    JWTexp: process.env.JWT_EXP || '30d',
     corsOptions:{
         origin:'*'
     },
@@ -46,8 +46,8 @@ const config = {
         options: {
             meta: {
                 logging: false,
-                timestamp: false,
-                paranoid: true,
+                // timestamps: true,
+                // paranoid: true,
                 // freezeTableName: true,
             },
             sync: {force: false} // force true  drop table and make it again

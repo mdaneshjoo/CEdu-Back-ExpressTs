@@ -92,6 +92,7 @@ export default class App {
       dialect,
       ...options.meta,
     });
+    seq.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";')
     seq
       .authenticate()
       .then(() => {

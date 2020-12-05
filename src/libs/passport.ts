@@ -4,6 +4,7 @@ import config from "../configs/config";
 import {eMessages} from "../utils/constants/eMessages";
 import User from "../models/User.model";
 import {sendError} from "../utils/helpers/response";
+import ServerError from "../errors/serverError";
 
 class Passport {
     constructor() {
@@ -18,11 +19,10 @@ class Passport {
        passport.use(new JwtStrategy(opts, function (jwt_payload, done) {
             User.findByPk(jwt_payload.id).then(user => {
                 if (user) return done(null, user.display())
-                return done(eMessages.UNAUTHORIZED, false)
+                return done(new ServerError(eMessages.UNAUTHORIZED), false)
             }).catch(e => {
-                return done(eMessages.UNAUTHORIZED, false)
+                return done(new ServerError(eMessages.UNAUTHORIZED), false)
             })
-
         }));
 
     }

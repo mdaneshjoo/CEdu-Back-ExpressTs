@@ -24,6 +24,8 @@ export default class QuizAnswers extends BaseModel {
       },
       {
         sequelize,
+        paranoid: true,
+            timestamps:true,
         hooks: {},
       }
     );

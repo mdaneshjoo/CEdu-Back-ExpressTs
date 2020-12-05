@@ -1,15 +1,17 @@
-import {CreateOptions, DataTypes, InstanceUpdateOptions, Op, Transactionable} from 'sequelize'
+import { CreateOptions, DataTypes, InstanceUpdateOptions, Op, FindAttributeOptions, UpdateOptions } from 'sequelize'
 import BaseModel from './Base.model';
-import {HookReturn} from "sequelize/types/lib/hooks";
-import {Hash} from "../libs/hash";
+import { HookReturn } from "sequelize/types/lib/hooks";
+import { Hash } from "../libs/hash";
 import PersonalInfo from "./Personal-info.model";
-import {Neo4j, cypher} from "../libs/Neo4j";
+import { Neo4j, cypher } from "../libs/Neo4j";
+import Email from "../libs/Email";
+import Channels from "./Channels.model";
 
 
 export default class User extends BaseModel {
     static init(sequelize) {
         return super.init({
-         ...super.uuidID,
+            ...super.uuidID,
             userName: {
                 type: DataTypes.STRING,
                 allowNull: false,
@@ -42,6 +44,8 @@ export default class User extends BaseModel {
 
         }, {
             sequelize,
+            paranoid: true,
+            timestamps:true,
             hooks: {
                 beforeCreate(user: User, options) {
                     const password = user.get('password').toString()
@@ -58,9 +62,13 @@ export default class User extends BaseModel {
                 afterCreate(user: User, options: CreateOptions): HookReturn {
                     return Promise.all([
                         cypher
-                            .createNode('user', 'User', {...user.display()})
+                            .createNode('user', 'User', { ...user.display() })
                             .run(),
-                        //
+                        new Email().sendRegisterationEmail({
+                            email: user['email'],
+                            username: user.get('userName').toString(),
+                            password: user.get('password').toString()
+                        })
                     ]).then(res => {
                     })
                         .catch(e => {
@@ -69,11 +77,12 @@ export default class User extends BaseModel {
 
 
                 },
-                afterUpdate(user: User, options: CreateOptions): HookReturn {
+                afterUpdate(user: User, options: UpdateOptions): HookReturn {
+
                     return new Neo4j()
                         .updateVar('user', 'User',
-                            {id: user.get('id')},
-                            {...user.grapgAttr()})
+                            { id: user.get('id') },
+                            { ...user.grapgAttr() })
                         .then(res => {
                         })
                         .catch(e => {
@@ -105,7 +114,7 @@ export default class User extends BaseModel {
             where: {
                 userName
             },
-            defaults: {...body},
+            defaults: { ...body },
         })
     }
 
@@ -127,20 +136,48 @@ export default class User extends BaseModel {
         return user
     }
 
+    static getUserChannelAndCount(by: { userName?, id?}, includeAttr?: FindAttributeOptions) {
+        let where = by.userName ? { userName: by.userName } : { id: by.id }
+        let _attributes = includeAttr ? { attributes: includeAttr } : null
+        return this.findAndCountAll({
+            where,
+            attributes: [],
+            
+            include: [
+                {
+                    model: Channels,
+                    as: 'channels',
+                    ..._attributes,
+                }
+            ],
+            // DESC-ASC
+            order: [['channels','title', 'ASC']]
+        })
+            .then(({ count, rows }) => {
+                if (rows.length)
+                    return {
+                        channels: rows[0]['channels'],
+                        count
+                    }
+            })
+
+    }
+
     static associate(models) {
         this.hasOne(models.PersonalInfo, {
             as: 'info',
             foreignKey: {
                 allowNull: false,
                 name: 'userId'
-            }
+            },
         })
         this.hasMany(models.Channels, {
             as: 'channels',
             foreignKey: {
                 allowNull: false,
                 name: 'ownerId'
-            }
+            },
+
         })
         this.belongsToMany(models.Channels, {
             through: 'Subscriber_Channel',

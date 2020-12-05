@@ -1,10 +1,11 @@
-import {Request, Response, Router} from 'express'
+import { Request, Response, Router } from 'express'
 import IController from '../../../interfaces/controller.interface'
 import PersonalInfo from "../../../models/Personal-info.model";
 import personalInfoBody from "../../../middlewares/personal-info/saveValidator.middleware";
-import {uploadAvatar} from "../../../middlewares/upload/upload.middleware";
-import {sendError, success} from "../../../utils/helpers/response";
-import * as fs from 'fs'
+import { uploadAvatar } from "../../../middlewares/upload/upload.middleware";
+import { sendError, success } from "../../../utils/helpers/response";
+import { deleteFile } from "../../../utils/helpers/general";
+
 import ServerError from "../../../errors/serverError";
 
 /**
@@ -45,16 +46,14 @@ export default class PersonalInfoController implements IController {
      *                      }
      */
     private async save(req: Request, res: Response) {
-        const {body, user, file} = req
-        PersonalInfo._CreateOrUpdate(user['id'], {avatar: file.path, ...body}, true)
+        const { body, user, file } = req
+        // if avatar not uploaded well not be touched , in update keep old file and in createng save default value
+        const avatarfiled = (file && file.path) ? { avatar: file.path } : null
+        PersonalInfo._CreateOrUpdate(user['id'], { ...avatarfiled, ...body }, true)
             .then((personalInfo) => {
                 if (Array.isArray(personalInfo)) {
                     const [oldData, updatedDate] = personalInfo
-                    try {
-                        fs.existsSync(oldData['avatar']) ? fs.unlinkSync(oldData['avatar']) : null
-                    } catch (e) {
-                        throw new ServerError(e)
-                    }
+                    if (avatarfiled) deleteFile(oldData['avatar'])
                     return updatedDate
                 }
                 return personalInfo

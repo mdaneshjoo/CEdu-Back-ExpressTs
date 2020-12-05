@@ -41,6 +41,8 @@ export default class GroupMessages extends BaseModel {
       },
       {
         sequelize,
+        paranoid: true,
+            timestamps:true,
         hooks: {},
       }
     );

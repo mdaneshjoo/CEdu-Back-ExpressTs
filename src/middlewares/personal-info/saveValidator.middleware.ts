@@ -8,7 +8,7 @@ import JoiValidator from "../../utils/validators/joi";
  * @param {string} req.body.password - Required
  * @param {string} req.body.email - not Required but validate
  * @param {string} req.body.phoneNumber - not Required but validate
- * @throws {ServerError} userName is required Or email is not valid
+ * @throws {JoivalidationError} userName is required Or email is not valid
  * */
 const personalInfoBody = (req: Request, res: Response, next): void => {
     const joi = new JoiValidator()

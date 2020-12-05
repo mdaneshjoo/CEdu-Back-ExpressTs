@@ -13,8 +13,9 @@ export default class Email {
     email
       .createTransport(configs.email.smtpConfig)
       .sendMail(options, (e, info) => {
-        if (configs.env === 'development') console.log("sending email was", info.response)
         if (e) throw new ServerError(e);
+        if (configs.env === 'development' && info) console.log("sending email was", info.response)
+
       });
   }
   /**

@@ -28,6 +28,8 @@ export default class Notifications extends BaseModel {
       },
       {
         sequelize,
+        paranoid: true,
+            timestamps:true,
         hooks: {},
       }
     );

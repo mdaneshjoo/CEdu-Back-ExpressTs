@@ -15,7 +15,9 @@ export default class Subscriber_Channel extends BaseModel {
             ...super.baseFields,
 
         }, {
-            sequelize
+            sequelize,
+            paranoid: true,
+            timestamps:true,
         });
     }
 

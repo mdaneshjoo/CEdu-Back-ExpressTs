@@ -58,6 +58,16 @@ export const eMessages = {
             statusCode: StatusCodes.BAD_REQUEST,
             code: 1009
         }
+    },
+    UPDATE_UNABLE:{
+        message: 'unable to update',
+        statusCode: StatusCodes.BAD_REQUEST,
+        code: 1010
+    },
+    DELETE_UNABLE:{
+        message: 'unable to delete',
+        statusCode: StatusCodes.BAD_REQUEST,
+        code: 1011
     }
 
 
@@ -77,5 +87,6 @@ export const systemErrorMessages = {
             statusCode: StatusCodes.BAD_REQUEST,
             message: e.errors[0].message
         }
-    }
+    },
+   
 }

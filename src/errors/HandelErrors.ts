@@ -1,8 +1,8 @@
-import {ValidationError} from "sequelize";
-import {eMessages, systemErrorMessages} from "../utils/constants/eMessages";
+import { ValidationError } from "sequelize";
+import { eMessages, systemErrorMessages } from "../utils/constants/eMessages";
 import config from "../configs/config";
 import ServerError from "./serverError";
-import {IErrorPropertys} from "../interfaces/errorMessages.interface";
+import { IErrorPropertys } from "../interfaces/errorMessages.interface";
 import JoivalidationError from "./JoivalidationError";
 
 /**
@@ -16,24 +16,32 @@ export class HandelErrors {
         this.seqeulizeError(Error)
         this.joiError(Error)
         // other error types in here
+        this.syntaxError(Error)
         this.defaultError(Error)
-        if (config.env === 'development') console.log(Error || this.errorProperty)
+        this.mainErorClass(Error)
     }
+    private mainErorClass(e) {
+        if (e instanceof Error) return this.errorProperty = systemErrorMessages.default(e)
 
+    }
     private defaultError(e) {
-        if (e instanceof ServerError||e instanceof TypeError) this.errorProperty = systemErrorMessages.default(e)
+        if (e instanceof ServerError || e instanceof TypeError) return this.errorProperty = systemErrorMessages.default(e)
     }
 
     private seqeulizeError(e) {
-        if (e instanceof ValidationError) this.errorProperty = systemErrorMessages.sequlizeValidationError(e)
+        if (e instanceof ValidationError) return this.errorProperty = systemErrorMessages.sequlizeValidationError(e)
     }
 
     private noError(e) {
-        if (!e) this.errorProperty = eMessages.NOT_FOUND
+        if (!e) return this.errorProperty = eMessages.NOT_FOUND
     }
 
     private joiError(e) {
-        if (e instanceof JoivalidationError) this.errorProperty = eMessages.VALIDATE_JOI(e)
+        if (e instanceof JoivalidationError) return this.errorProperty = eMessages.VALIDATE_JOI(e)
+    }
+
+    private syntaxError(e) {
+        if (e instanceof SyntaxError) return this.errorProperty = systemErrorMessages.default(e)
     }
 
     /**
@@ -47,6 +55,7 @@ export class HandelErrors {
      * @return  error - return error like example
      **/
     public get properError() {
+        if (config.env === 'development') console.log(this.Error || this.errorProperty)
         return this.errorProperty
     }
 
