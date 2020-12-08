@@ -1,4 +1,4 @@
-import {StatusCodes} from 'http-status-codes'
+import { StatusCodes } from 'http-status-codes'
 
 
 export const sMessages = {
@@ -20,13 +20,25 @@ export const sMessages = {
         statusCode: StatusCodes.CREATED,
         withData: true
     },
-    DELETE_OK:{
+    DELETE_OK: {
         message: 'Deletion was successful',
         code: 3004,
+        statusCode: StatusCodes.OK,
+        withData: false
+    },
+    IS_SUBSCRIBE: {
+        message: 'YOU AR  subscribe channel successfully',
+        code: 3005,
         statusCode: StatusCodes.CREATED,
-        withData: true
+        withData: false
+    },
+    REQUEST_SEND_OK: {
+        message: 'Request send successfully',
+        code: 3006,
+        statusCode: StatusCodes.OK,
+        withData: false
     }
-    
+
 
 }
 

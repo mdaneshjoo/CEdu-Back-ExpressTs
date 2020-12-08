@@ -1,17 +1,17 @@
 import { Request, Response, Router } from "express";
-import IController from "../../../interfaces/controller.interface";
-import User from "../../../models/User.model";
-import { sendError, success } from "../../../utils/helpers/response";
-import ServerError from "../../../errors/serverError";
-import { eMessages } from "../../../utils/constants/eMessages";
-import JWT from "../../../libs/JWT";
-import passport from "../../../libs/passport";
-import AuthenticationMiddleware from "../../../middlewares/Authentication.middleware";
-import { sMessages } from "../../../utils/constants/SMessages";
-import { Importer } from "../../../utils/helpers/Piper";
-import Email from "../../../libs/Email";
+import IController from "../../../../interfaces/controller.interface";
+import User from "../../../../models/User.model";
+import { sendError, success } from "../../../../utils/helpers/response";
+import ServerError from "../../../../errors/serverError";
+import { eMessages } from "../../../../utils/constants/eMessages";
+import JWT from "../../../../libs/JWT";
+import passport from "../../../../libs/passport";
+import AuthenticationMiddleware from "../../../../middlewares/Authentication.middleware";
+import { sMessages } from "../../../../utils/constants/SMessages";
+import { Importer } from "../../../../utils/helpers/Piper";
+import Email from "../../../../libs/Email";
 import * as _ from 'lodash'
-import PersonalInfo from "../../../models/Personal-info.model";
+import PersonalInfo from "../../../../models/Personal-info.model";
 /**
  * @classdesc for login and signup
  * */
@@ -124,6 +124,8 @@ export default class AuthController implements IController {
    * @apiParam {String} password Required
    * @apiParam {String} email
    * @apiParam {String} phoneNumber
+   * @apiHeader {Bearer} Authorization  JWT token 
+   * 
    * @apiParamExample {json} update params
    *                  {
    *                      "userName":"foo",

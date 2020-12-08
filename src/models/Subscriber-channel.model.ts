@@ -10,7 +10,7 @@ export default class Subscriber_Channel extends BaseModel {
             },
             channelId:{
                 type: DataTypes.UUID,
-                allowNull:false
+                allowNull:false,
             },
             ...super.baseFields,
 

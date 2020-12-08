@@ -1,6 +1,6 @@
-import { CreateOptions, DataTypes, InstanceUpdateOptions, Op } from 'sequelize'
+import {CreateOptions, DataTypes, InstanceUpdateOptions} from 'sequelize'
 import BaseModel from './Base.model';
-import { HookReturn } from "sequelize/types/lib/hooks";
+import {HookReturn} from "sequelize/types/lib/hooks";
 import PersonalInfo from "./Personal-info.model";
 
 
@@ -49,11 +49,13 @@ export default class Channels extends BaseModel {
         });
     }
 
+    readonly id = this.get('id')
+    readonly isPrivate = this.get('isPrivate')
 
     async defaultTitle() {
         const userId: any = this.get('ownerId')
         const userInfo = await PersonalInfo.findOne({
-            where: { userId },
+            where: {userId},
             raw: true
         })
         const defaultName = (userInfo && userInfo['lastName']) ? `${userInfo['lastName']}'s` : 'Untitled'
@@ -72,7 +74,7 @@ export default class Channels extends BaseModel {
         this.belongsToMany(models.User, {
             through: 'Subscriber_Channel',
             as: 'subscribers',
-            foreignKey: 'subscriberId'
+            foreignKey: 'channelId'
         })
 
         this.hasMany(models.Posts, {

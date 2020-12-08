@@ -1,5 +1,5 @@
 import { StatusCodes } from "http-status-codes";
-import { ValidationError } from "sequelize";
+import { ValidationError ,DatabaseError } from "sequelize";
 import IResponse from "../../interfaces/successResponse.interface";
 
 export const eMessages = {
@@ -11,7 +11,7 @@ export const eMessages = {
     NOT_FOUND: {
         message: 'Not found',
         code: 1001,
-        statusCode: StatusCodes.BAD_REQUEST
+        statusCode: StatusCodes.NOT_FOUND
     },
     ROUTE_NOT_FOUND: (dist) => {
         return {
@@ -68,6 +68,21 @@ export const eMessages = {
         message: 'unable to delete',
         statusCode: StatusCodes.BAD_REQUEST,
         code: 1011
+    },
+    SUBSCRIBED_BEFORE:{
+        message: 'you ahve already subscribe this channel before',
+        statusCode: StatusCodes.BAD_REQUEST,
+        code: 1012
+    },
+    REQUEST_EXIST: {
+        message: 'you already send request',
+        code: 1013,
+        statusCode: StatusCodes.BAD_REQUEST
+    },
+    UUID_NOT_VALID:{
+        message: 'UUID is not valid',
+        code: 1014,
+        statusCode: StatusCodes.BAD_REQUEST
     }
 
 
@@ -86,6 +101,13 @@ export const systemErrorMessages = {
             code: 2002,
             statusCode: StatusCodes.BAD_REQUEST,
             message: e.errors[0].message
+        }
+    },
+    dbError: (e: DatabaseError) => {
+        return {
+            code: 2003,
+            statusCode: StatusCodes.BAD_REQUEST,
+            message: e.message
         }
     },
    

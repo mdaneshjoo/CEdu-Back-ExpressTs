@@ -1,5 +1,5 @@
 import { Response, Request } from 'express'
-import JoiValidator from "../../utils/validators/joi";
+import JoiValidator from "../../../../../utils/validators/joi";
 
 
 /**
@@ -12,3 +12,10 @@ export const createAndUpdateChannelBody = (req: Request, res: Response, next): v
     req.body = joi.createChannelBody(req.body)
     next()
 }
+
+
+
+
+
+
+

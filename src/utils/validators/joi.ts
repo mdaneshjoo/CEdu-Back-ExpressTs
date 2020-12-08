@@ -44,7 +44,8 @@ export default class JoiValidator {
         return this._validate(this.schema.createChannelBody, body)
     }
 
-  
+
+
 
 
 

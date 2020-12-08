@@ -1,17 +1,17 @@
 import { Request, Response, Router } from 'express'
-import IController from '../../../interfaces/controller.interface'
-import PersonalInfo from "../../../models/Personal-info.model";
-import personalInfoBody from "../../../middlewares/personal-info/saveValidator.middleware";
-import { uploadAvatar } from "../../../middlewares/upload/upload.middleware";
-import { sendError, success } from "../../../utils/helpers/response";
-import { deleteFile } from "../../../utils/helpers/general";
-
-import ServerError from "../../../errors/serverError";
+import IController from '../../../../interfaces/controller.interface'
+import PersonalInfo from "../../../../models/Personal-info.model";
+import personalInfoBody from "../middleware/personal-info/saveValidator.middleware";
+import { uploadAvatar } from "../middleware/upload/upload.middleware";
+import { sendError, success } from "../../../../utils/helpers/response";
+import { deleteFile } from "../../../../utils/helpers/general";
+import User from "../../../../models/User.model";
+import Channels from "../../../../models/Channels.model";
 
 /**
  * @classdesc this class used for control user personal info
  * */
-export default class PersonalInfoController implements IController {
+export default class UserController implements IController {
     router = Router()
     constructor() {
         this.init()
@@ -20,6 +20,8 @@ export default class PersonalInfoController implements IController {
     init(): void {
         this.router.post('/info', uploadAvatar, personalInfoBody, this.save)
         this.router.get('/info', this.getDetail)
+        this.router.get('/getChannels', this.getSubscribedChannels)
+
     }
     /**
      * @api {post} /user/info Request for saving user info
@@ -69,6 +71,23 @@ export default class PersonalInfoController implements IController {
             },
             raw: true
         }).then(success(res))
+    }
+
+    private getSubscribedChannels({ user }: Request, res: Response) {
+        User.findByPk(user['id'], {
+            attributes: [],
+            include: [
+                {
+                    model: Channels,
+                    as: 'subscribedChannels',
+                    through: {
+                        attributes: [],
+                    }
+                }
+            ]
+        })
+            .then(success(res))
+            .catch(sendError(res))
     }
 
 

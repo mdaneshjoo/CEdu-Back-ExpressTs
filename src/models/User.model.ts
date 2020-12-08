@@ -1,9 +1,9 @@
-import { CreateOptions, DataTypes, InstanceUpdateOptions, Op, FindAttributeOptions, UpdateOptions } from 'sequelize'
+import {CreateOptions, DataTypes, FindAttributeOptions, InstanceUpdateOptions, UpdateOptions} from 'sequelize'
 import BaseModel from './Base.model';
-import { HookReturn } from "sequelize/types/lib/hooks";
-import { Hash } from "../libs/hash";
+import {HookReturn} from "sequelize/types/lib/hooks";
+import {Hash} from "../libs/hash";
 import PersonalInfo from "./Personal-info.model";
-import { Neo4j, cypher } from "../libs/Neo4j";
+import {cypher, Neo4j} from "../libs/Neo4j";
 import Email from "../libs/Email";
 import Channels from "./Channels.model";
 
@@ -118,24 +118,34 @@ export default class User extends BaseModel {
         })
     }
 
-    display() {
+    /**
+     *
+     * */
+    display(withInfo: boolean = false) {
         let user = {}
-        const neededFileds = ['id', 'userName', 'email', 'phoneNumber', 'isUni', 'isPrivate']
+        const neededFileds = ['id', 'userName', 'email', 'phoneNumber', 'isUni']
         neededFileds.map(field => {
             user[field] = this.get(field)
         })
+        if (withInfo) return PersonalInfo.findOne({where: {userId: user['id']}}).then(info => Object.assign(user, info))
         return user
     }
 
     grapgAttr() {
         let user = {}
-        const neededFileds = ['userName', 'email', 'phoneNumber', 'isUni', 'isPrivate']
+        const neededFileds = ['userName', 'email', 'phoneNumber', 'isUni']
         neededFileds.map(field => {
             user[field] = `'${this.get(field)}'`
         })
         return user
     }
 
+/**
+ * get user created channels (owned channels)
+ * @param {Object} by  finding by user name or id
+ * @param {FindAttributeOptions} includeAttr filter columns with attribute
+ * @return {Promise} channels list and there counts
+ * */
     static getUserChannelAndCount(by: { userName?, id?}, includeAttr?: FindAttributeOptions) {
         let where = by.userName ? { userName: by.userName } : { id: by.id }
         let _attributes = includeAttr ? { attributes: includeAttr } : null

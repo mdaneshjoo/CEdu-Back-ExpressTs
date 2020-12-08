@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import IController from "../../../interfaces/controller.interface";
+import IController from "../../../../interfaces/controller.interface";
 
 
 export default class RequestsController implements IController {

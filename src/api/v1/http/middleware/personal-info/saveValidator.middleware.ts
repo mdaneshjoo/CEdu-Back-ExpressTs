@@ -1,6 +1,6 @@
 import {Response, Request} from 'express'
-import {IAuthBody} from "../../interfaces/authBody.interface";
-import JoiValidator from "../../utils/validators/joi";
+import {IAuthBody} from "../../../../../interfaces/authBody.interface";
+import JoiValidator from "../../../../../utils/validators/joi";
 
 /**
  * validate api for body request

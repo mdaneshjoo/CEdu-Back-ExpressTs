@@ -1,6 +1,6 @@
 import { Response, Request } from 'express'
-import Channels from "../../models/Channels.model";
-import User from "../../models/User.model";
+import Channels from "../../../../../models/Channels.model";
+import User from "../../../../../models/User.model";
 
 
 
