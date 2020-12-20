@@ -93,7 +93,6 @@ export default class AuthController implements IController {
     User._findOrCreate(body.userName, body)
       .then(async ([user, created]) => {
         if (!created) throw new ServerError(eMessages.USER_EXIST);
-
         if (user) return AuthController.makeResponse(user);
       })
       .then(success(res, sMessages.USER_CREATED))
